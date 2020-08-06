@@ -1,27 +1,29 @@
-import time
+from typing import List
 
 
-class TrafficLight(object):
-    def __init__(self):
-        self.color = None
-        self._traffic_states = [{"color": "red",
-                                 "duration": 7},
-                                {"color": "yellow",
-                                 "duration": 2},
-                                {"color": "green",
-                                 "duration": 5}
-                                ]
+class Matrix(object):
+    def __init__(self, matrix: List[List]):
+        self.matrix = matrix
 
-    def _traffic_run_state(self, duration):
-        for t in range(duration, 0, -1):
-            print("{color} light: {time_left}".format(color=self.color, time_left=t))
-            time.sleep(1)
+    def __str__(self):
+        return '\n'.join([''.join(['{:4}'.format(item) for item in row])
+                          for row in self.matrix])
 
-    def running(self):
-        for state in self._traffic_states:
-            self.color = state["color"]
-            self._traffic_run_state(state["duration"])
+    def __add__(self, other):
+        sum_matrix = []
+        for ind_row, row in enumerate(self.matrix):
+            row_sum_matrix = []
+            for ind_el, el in enumerate(row):
+                row_sum_matrix.append(el + other.matrix[ind_row][ind_el])
+            sum_matrix.append(row_sum_matrix)
+        return Matrix(sum_matrix)
 
 
-traffic_light = TrafficLight()
-traffic_light.running()
+matrix1 = Matrix([[1, 2, 3], [1, 2, 3], [1, 2, 3]])
+print(matrix1)
+
+matrix2 = Matrix([[1, 2, 3], [1, 2, 3], [1, 2, 3]])
+print(matrix2)
+
+matrix3 = matrix1 + matrix2
+print(matrix3)

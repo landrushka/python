@@ -1,28 +1,47 @@
-class Worker(object):
-    def __init__(self, name, surname, position, income):
-        self.name = name
-        self.surname = surname
-        self.position = position
-        self.__income = income
+class Cell(object):
+    def __init__(self, count: int):
+        if count <= 0:
+            raise ValueError
+        self.count = count
 
-    def get_income(self):
-        return self.__income
+    def __add__(self, other):
+        return Cell(count=self.count + other.count)
+
+    def __sub__(self, other):
+        sub = self.count - other.count
+        if sub <= 0:
+            raise ValueError
+        return Cell(count=sub)
+
+    def __mul__(self, other):
+        return Cell(count=self.count * other.count)
+
+    def __truediv__(self, other):
+        return Cell(count=self.count // other.count)
+
+    def make_order(self, cols):
+        rows = self.count // cols
+        cells_full = '\n'.join([''.join(['*' for col in range(cols)])
+                                for row in range(rows)])
+        rows_part = self.count % cols
+        if rows_part > 0:
+            cells_part = '\n'.join([''.join(['*' for col in range(rows_part)])
+                                    for row in range(1)])
+            out = cells_full + '\n' + cells_part
+        else:
+            out = cells_full
+        print(out)
+
+    def __str__(self):
+        return str(self.count)
 
 
-class Position(Worker):
-    def __init__(self, name, surname, position, income):
-        super().__init__(name=name, surname=surname, position=position, income=income)
+cell_1 = Cell(9)
+cell_2 = Cell(2)
 
-    def get_full_name(self):
-        return "{} {}".format(self.name, self.surname)
+print(cell_1 + cell_2)
+print(cell_1 - cell_2)
+print(cell_1 * cell_2)
+print(cell_1 / cell_2)
 
-    def get_total_income(self):
-        income = self.get_income()
-        return income["wage"] + income["bonus"]
-
-
-position = Position(name="Andrey", surname="Livintsev", position="Software engineer",
-                    income={"wage": 100, "bonus": 999})
-
-print(position.get_full_name())
-print(position.get_total_income())
+cell_1.make_order(2)
